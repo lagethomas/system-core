@@ -770,6 +770,11 @@ class SMTP
         }
     }
 
+    /**
+     * Iterate over lines.
+     * @param string $s
+     * @return \Generator
+     */
     private function iterateLines($s)
     {
         $start = 0;

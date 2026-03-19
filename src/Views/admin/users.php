@@ -1,22 +1,7 @@
 <?php
-<<<<<<<< HEAD:src/Views/admin/users.php
 /** @var array $all_users */
-
-include_once __DIR__ . '/../../../includes/header.php';
-========
-declare(strict_types=1);
-require_once '../../includes/DB.php';
-require_once dirname(__DIR__, 2) . "/includes/helpers/Auth.php";
-require_once '../../includes/repositories/UserRepository.php';
-
-Auth::requireAdmin();
-
-$userRepo = new UserRepository($pdo);
-$all_users = $userRepo->getAll();
-
-include_once '../../includes/header.php';
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/admin/users.php
 ?>
+
 
 <div class="users-header">
     <h2>Gerenciamento de Usuários</h2>
@@ -185,8 +170,4 @@ async function deleteUser(id) {
 }
 </script>
 
-<<<<<<<< HEAD:src/Views/admin/users.php
-<?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
-========
-<?php include_once '../../includes/footer.php'; ?>
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/admin/users.php
+

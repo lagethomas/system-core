@@ -9,7 +9,7 @@ use ThemeHelper;
 use Cache;
 
 class SettingsController extends Controller {
-    public function index() {
+    public function index(): void {
         Auth::requireAdmin();
         
         global $pdo;
@@ -48,7 +48,7 @@ class SettingsController extends Controller {
         $stmt->execute();
         $settings = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-        return $this->render('admin/settings', [
+        $this->render('admin/settings', [
             'settings' => $settings,
             'active_tab' => $active_tab
         ]);

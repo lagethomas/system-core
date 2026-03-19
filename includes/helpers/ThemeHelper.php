@@ -4,11 +4,7 @@
  */
 
 class ThemeHelper {
-<<<<<<< HEAD:includes/theme_helper.php
-    private static $themes_dir = __DIR__ . '/../public/assets/css/theme/';
-=======
     private static $themes_dir = __DIR__ . '/../../public/assets/css/theme/';
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:includes/helpers/ThemeHelper.php
 
     public static function getAvailableThemes() {
         $themes = [];

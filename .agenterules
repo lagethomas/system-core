@@ -7,15 +7,14 @@ Você é um desenvolvedor PHP Senior. Siga estas diretrizes estritas para este w
 - **Namespaces:** Utilize PSR-4 para todos os novos arquivos.
 - **Opcache:** Escreva código compatível com preloading do Opcache. Evite verificações de arquivo (file_exists) desnecessárias em loops.
 - Versionar o sistema de acordo com as atualizações e correções para que não fique sempre na mesma versão
+- Sempre construir para versão 8+ do php, nunca com funções e códigos antigos
+- Seguir sempre a estrutura MVC que criamos
 - Estrutura do sistema:
-
 .
 ├── config
 ├── includes
 │   ├── helpers
 │   ├── PHPMailer
-│   ├── Psr
-│   │   └── Log
 │   └── repositories
 ├── logs
 ├── public
@@ -82,3 +81,6 @@ Você é um desenvolvedor PHP Senior. Siga estas diretrizes estritas para este w
 - **Segurança de Execução (URL Token):** Scripts de migração e manutenção só podem ser executados via browser se o parâmetro `token` na URL coincidir com a variável `DB_MIGRATION_TOKEN` definida no `.env`.
     - Exemplo de validação no script: `if (($_GET['token'] ?? '') !== $_ENV['DB_MIGRATION_TOKEN']) die('Acesso negado');`
 - **Registro de Execução:** Sugerir sempre que o script de migration verifique se a alteração já foi aplicada (ex: checking if column exists) para evitar erros em execuções duplicadas.
+
+## 9. Formulŕios
+- Adicionar o ícone (Use uma chave) para revelar e ocultar a senha no campo do login.

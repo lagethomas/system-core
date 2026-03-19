@@ -81,16 +81,7 @@ class Auth {
     /**
      * Logout user and clear session
      */
-<<<<<<< HEAD:includes/auth.php
-    public static function logout() {
-=======
     public static function logout(): void {
-        $is_subfolder = (strpos($_SERVER['PHP_SELF'], '/admin/') !== false || 
-                         strpos($_SERVER['PHP_SELF'], '/api/') !== false || 
-                         strpos($_SERVER['PHP_SELF'], '/app/') !== false);
-        $prefix = $is_subfolder ? '../' : '';
-        
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:includes/helpers/Auth.php
         session_unset();
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
@@ -101,16 +92,12 @@ class Auth {
         }
         session_destroy();
         
-<<<<<<< HEAD:includes/auth.php
-        header("Location: " . SITE_URL . "/login.php");
-        exit;
-=======
         if (!headers_sent()) {
-            header("Location: {$prefix}login.php");
+            header("Location: " . SITE_URL . "/login.php");
             exit;
         }
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:includes/helpers/Auth.php
     }
+
 
     /**
      * Check for session inactivity (2 hours)

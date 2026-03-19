@@ -1,27 +1,7 @@
 <?php
-<<<<<<<< HEAD:src/Views/app/profile.php
 /** @var array $user */
-
-include_once __DIR__ . '/../../../includes/header.php';
-========
-declare(strict_types=1);
-require_once '../../includes/DB.php';
-require_once dirname(__DIR__, 2) . "/includes/helpers/Auth.php";
-
-Auth::requireLogin();
-
-$user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT * FROM cp_users WHERE id = ?");
-$stmt->execute([$user_id]);
-$user = $stmt->fetch();
-
-if (!$user) {
-    die("Usuário não encontrado.");
-}
-
-include_once '../../includes/header.php';
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/app/profile.php
 ?>
+
 
 <div class="profile-card">
     <div class="profile-info-header">
@@ -114,8 +94,4 @@ include_once '../../includes/header.php';
     </form>
 </div>
 
-<<<<<<<< HEAD:src/Views/app/profile.php
-<?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
-========
-<?php include_once '../../includes/footer.php'; ?>
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/app/profile.php
+

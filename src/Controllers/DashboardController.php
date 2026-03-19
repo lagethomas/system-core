@@ -8,7 +8,7 @@ use Auth;
 use PDO;
 
 class DashboardController extends Controller {
-    public function index() {
+    public function index(): void {
         $user_name = $_SESSION['user_name'] ?? 'Usuário';
         $total_users = 0;
         $total_logs = 0;
@@ -18,7 +18,7 @@ class DashboardController extends Controller {
             $total_logs = \App\Core\Database::fetch("SELECT COUNT(*) as total FROM cp_logs")['total'] ?? 0;
         } catch (\Exception $e) {}
 
-        return $this->render('app/dashboard', [
+        $this->render('app/dashboard', [
             'user_name' => $user_name,
             'total_users' => $total_users,
             'total_logs' => $total_logs

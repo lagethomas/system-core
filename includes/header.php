@@ -1,19 +1,13 @@
 <?php
 declare(strict_types=1);
-<<<<<<< HEAD
 global $pdo;
-require_once 'auth.php';
-require_once 'csrf.php';
-require_once 'repositories/NotificationRepository.php';
-=======
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9
+require_once __DIR__ . '/helpers/Auth.php';
+require_once __DIR__ . '/helpers/CSRF.php';
+require_once __DIR__ . '/repositories/NotificationRepository.php';
 
 $user_id = (int)($_SESSION['user_id'] ?? 0);
 $user_name = $_SESSION['user_name'] ?? 'Usuário';
 $user_role = $_SESSION['user_role'] ?? 'usuario';
-
-$app_prefix = '/app/'; // Deprecated, but keeping for compatibility if used elsewhere
-$admin_prefix = '/admin/'; // Deprecated, but keeping for compatibility if used elsewhere
 
 // Page title detector (MVC Aware)
 global $current_page;
@@ -77,17 +71,9 @@ $unread_count = count($unread_notifications);
     <?php 
     // Auto-load page specific CSS from modules
     $page_name = str_replace('.php', '', $current_page);
-<<<<<<< HEAD
     $css_path = dirname(__FILE__) . "/../public/assets/css/modules/{$page_name}.css";
     if (file_exists($css_path)) {
         echo '<link rel="stylesheet" href="' . \App\Core\Controller::asset('/assets/css/modules/' . $page_name . '.css') . '">';
-=======
-    $css_relative_path = "assets/css/modules/{$page_name}.css";
-    $css_full_path = dirname(__DIR__) . "/public/" . $css_relative_path;
-    
-    if (file_exists($css_full_path)) {
-        echo '<link rel="stylesheet" href="' . $path_prefix . $css_relative_path . '?v=' . time() . '">';
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9
     }
     ?>
 
@@ -177,7 +163,7 @@ $unread_count = count($unread_notifications);
                     <div class="notif-trigger" id="notif-trigger">
                         <i class="fas fa-bell"></i>
                         <?php if ($unread_count > 0): ?>
-                            <span class="notif-badge"><?php echo $unread_count; ?></span>
+                            <span class="notif-badge"><?php echo (string)$unread_count; ?></span>
                         <?php endif; ?>
                     </div>
 
@@ -240,23 +226,11 @@ document.addEventListener('click', function() {
 });
 
 async function markRead(id) {
-<<<<<<< HEAD
     await fetch('<?php echo SITE_URL; ?>/api/notifications/read/' + id);
 }
 
 async function markAllRead() {
     const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read_all');
-=======
-    await fetch('<?php echo $path_prefix; ?>api/notifications.php?action=read&id=' + id, {
-        headers: { 'X-CSRF-Token': '<?php echo CSRF::generateToken(); ?>' }
-    });
-}
-
-async function markAllRead() {
-    const res = await fetch('<?php echo $path_prefix; ?>api/notifications.php?action=read_all', {
-        headers: { 'X-CSRF-Token': '<?php echo CSRF::generateToken(); ?>' }
-    });
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9
     if (res.ok) window.location.reload();
 }
 </script>

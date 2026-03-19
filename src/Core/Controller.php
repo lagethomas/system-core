@@ -11,7 +11,7 @@ class Controller {
      * @param array $data Data to be extracted into the view
      * @param bool $withLayout Whether to include header/footer
      */
-    protected function render(string $view, array $data = [], bool $withLayout = true) {
+    protected function render(string $view, array $data = [], bool $withLayout = true): void {
         global $pdo, $platform_settings, $current_page;
         
         // Make essential globals available in view
@@ -41,7 +41,7 @@ class Controller {
     /**
      * Standardized JSON Response
      */
-    protected function jsonResponse(array $data, int $code = 200) {
+    protected function jsonResponse(array $data, int $code = 200): void {
         header('Content-Type: application/json');
         http_response_code($code);
         echo json_encode($data);

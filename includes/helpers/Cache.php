@@ -15,7 +15,7 @@ declare(strict_types=1);
  */
 
 class Cache {
-    /** @var Redis|null */
+    /** @var mixed */
     private static $redis = null;
     private static bool $redisAvailable = false;
     private static bool $initialized = false;
@@ -32,27 +32,30 @@ class Cache {
             mkdir(self::$cacheDir, 0750, true);
         }
 
-        // Tentar conectar ao Redis se disponível
-        if (extension_loaded('redis') && defined('REDIS_HOST') && !empty(REDIS_HOST)) {
+        // Tentar conectar ao Redis se estiver configurado e a extensão estiver presente
+        $redisHost = $_ENV['REDIS_HOST'] ?? (defined('REDIS_HOST') ? REDIS_HOST : null);
+        
+        if (class_exists('Redis') && $redisHost) {
             try {
-                $r = new Redis();
-                $connected = $r->connect(
-                    REDIS_HOST,
-                    defined('REDIS_PORT') ? (int)REDIS_PORT : 6379,
-                    2.0 // timeout de 2s para não bloquear
-                );
+                $redisClass = 'Redis';
+                $r = new $redisClass();
+                $port = (int)($_ENV['REDIS_PORT'] ?? (defined('REDIS_PORT') ? REDIS_PORT : 6379));
+                $pass = $_ENV['REDIS_PASSWORD'] ?? (defined('REDIS_PASSWORD') ? REDIS_PASSWORD : null);
+                $db   = (int)($_ENV['REDIS_DB'] ?? (defined('REDIS_DB') ? REDIS_DB : 0));
+
+                $connected = $r->connect($redisHost, $port, 2.0);
                 if ($connected) {
-                    if (defined('REDIS_PASSWORD') && !empty(REDIS_PASSWORD)) {
-                        $r->auth(REDIS_PASSWORD);
+                    if ($pass) {
+                        $r->auth($pass);
                     }
-                    if (defined('REDIS_DB')) {
-                        $r->select((int)REDIS_DB);
+                    if ($db > 0) {
+                        $r->select($db);
                     }
-                    $r->setOption(Redis::OPT_PREFIX, 'saasflow:');
+                    $r->setOption(constant($redisClass . '::OPT_PREFIX'), 'saasflow:');
                     self::$redis = $r;
                     self::$redisAvailable = true;
                 }
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 // Redis indisponível; silencioso — usa fallback de arquivo
             }
         }

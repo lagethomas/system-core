@@ -1,52 +1,8 @@
 <?php
-<<<<<<<< HEAD:src/Views/admin/settings.php
 /** @var array $settings */
 /** @var string $active_tab */
-
-include_once __DIR__ . '/../../../includes/header.php';
-========
-declare(strict_types=1);
-require_once '../../includes/DB.php';
-require_once dirname(__DIR__, 2) . "/includes/helpers/Auth.php";
-
-Auth::requireAdmin();
-
-$active_tab = $_GET['tab'] ?? 'general';
-
-// Fetch Current Settings
-$stmt = $pdo->prepare("SELECT setting_key, setting_value FROM cp_settings");
-$stmt->execute();
-$settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['save_general'])) {
-        $keys = ['system_name', 'enable_system_logs'];
-        foreach ($keys as $key) {
-            $val = trim($_POST[$key] ?? '');
-            if ($key === 'enable_system_logs') $val = isset($_POST[$key]) ? '1' : '0';
-            
-            $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
-            $stmt->execute([$key, $val, $val]);
-        }
-        Cache::delete('platform_settings');
-        header("Location: settings.php?tab=general&msg=saved");
-        exit;
-    }
-
-    if (isset($_POST['save_theme'])) {
-        $theme = $_POST['system_theme'] ?? 'gold-black';
-        $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('system_theme', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
-        $stmt->execute([$theme, $theme]);
-        Cache::delete('platform_settings');
-        
-        header("Location: settings.php?tab=themes&msg=updated");
-        exit;
-    }
-}
-
-include_once '../../includes/header.php';
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/admin/settings.php
 ?>
+
 
 <div class="settings-tab-nav">
     <a href="?tab=general" class="nav-link-tab <?php echo $active_tab === 'general' ? 'active' : ''; ?>">
@@ -127,8 +83,4 @@ include_once '../../includes/header.php';
     <?php endif; ?>
 </div>
 
-<<<<<<<< HEAD:src/Views/admin/settings.php
-<?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
-========
-<?php include_once '../../includes/footer.php'; ?>
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/admin/settings.php
+

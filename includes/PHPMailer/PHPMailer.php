@@ -5169,14 +5169,14 @@ class PHPMailer
         if (openssl_sign($signHeader, $signature, $privKey, 'sha256WithRSAEncryption')) {
             if (\PHP_MAJOR_VERSION < 8) {
                 // phpcs:ignore PHPCompatibility.FunctionUse.RemovedFunctions.openssl_pkey_freeDeprecated
-                openssl_pkey_free($privKey);
+                call_user_func('openssl_pkey_free', $privKey);
             }
 
             return base64_encode($signature);
         }
         if (\PHP_MAJOR_VERSION < 8) {
             // phpcs:ignore PHPCompatibility.FunctionUse.RemovedFunctions.openssl_pkey_freeDeprecated
-            openssl_pkey_free($privKey);
+            call_user_func('openssl_pkey_free', $privKey);
         }
 
         return '';

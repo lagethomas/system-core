@@ -97,3 +97,32 @@ body.auth-wrapper {
 .btn-loader i {
     font-size: 1.1rem;
 }
+
+.password-toggle-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.btn-password-toggle {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-muted, #888);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    z-index: 10;
+}
+
+.btn-password-toggle:hover {
+    color: var(--primary);
+}
+
+.form-control.pr-10 {
+    padding-right: 45px !important;
+}
