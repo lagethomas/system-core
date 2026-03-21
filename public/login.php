@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../includes/DB.php';
-require_once __DIR__ . '/../includes/helpers/Auth.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/csrf.php';
+require_once __DIR__ . '/../includes/logs.php';
 
 if (Auth::isLoggedIn()) {
     header('Location: dashboard');
@@ -11,26 +13,9 @@ if (Auth::isLoggedIn()) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if ($username && $password) {
-        $stmt = $pdo->prepare('SELECT * FROM cp_users WHERE username = ?');
-        $stmt->execute([$username]);
-        $user = $stmt->fetch();
-
-        if ($user && password_verify($password, $user['password'])) {
-            session_regenerate_id(true);
-            Auth::login($user);
-            
-            require_once __DIR__ . '/../includes/logs.php';
-            Logger::log('login', "Login realizado.");
-            
-            header('Location: dashboard');
-            exit;
-        } else {
-            $error = 'Credenciais inválidas.';
-        }
+    // CSRF Validation
+    if (!CSRF::verifyToken($_POST['csrf_token'] ?? '')) {
+        $error = 'Erro de segurança (CSRF). Tente novamente.';
     } else {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -46,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 Logger::log('login', "Login realizado.");
                 
-                header('Location: app/dashboard.php');
+                header('Location: dashboard');
                 exit;
             } else {
                 $error = 'Credenciais inválidas.';
@@ -97,7 +82,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group mt-3">
                 <label class="auth-label">Senha</label>
-                <input type="password" name="password" class="form-control" placeholder="Sua senha" required>
+                <div class="password-toggle-wrapper">
+                    <input type="password" name="password" id="password" class="form-control pr-10" placeholder="Sua senha" required>
+                    <button type="button" class="btn-password-toggle" onclick="togglePassword('password')">
+                        <i class="fas fa-key" id="password-toggle-icon"></i>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="btn-primary btn-block mt-4" id="btnLogin">
@@ -109,13 +99,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 
-    <script src="assets/js/components/ui-core.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof UI !== 'undefined') {
-                UI.initPasswordToggles();
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById('password-toggle-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-key');
+                icon.classList.add('fa-unlock-alt');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-unlock-alt');
+                icon.classList.add('fa-key');
             }
-        });
+        }
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const btn = document.getElementById('btnLogin');

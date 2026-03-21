@@ -9,9 +9,6 @@ $user_id = (int)($_SESSION['user_id'] ?? 0);
 $user_name = $_SESSION['user_name'] ?? 'Usuário';
 $user_role = $_SESSION['user_role'] ?? 'usuario';
 
-$app_prefix = '/app/'; // Deprecated, but keeping for compatibility if used elsewhere
-$admin_prefix = '/admin/'; // Deprecated, but keeping for compatibility if used elsewhere
-
 // Page title detector (MVC Aware)
 global $current_page;
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -145,7 +142,7 @@ $unread_count = count($unread_notifications);
                     <a href="<?php echo SITE_URL; ?>/profile" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
                         <i class="fas fa-user-circle"></i> Meu Perfil Maroto
                     </a>
-                    <a href="<?php echo SITE_URL; ?>/logout" class="user-dropdown-item danger">
+                    <a href="<?php echo SITE_URL; ?>/logout.php" class="user-dropdown-item danger">
                         <i class="fas fa-sign-out-alt"></i> Sair do Sistema
                     </a>
                 </div>
@@ -158,7 +155,7 @@ $unread_count = count($unread_notifications);
                     <button class="menu-toggle" onclick="toggleSidebar()">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h2 class="page-title"><?php echo (string)($page_titles[$current_page] ?? 'Início'); ?></h2>
+                    <h2 class="page-title"><?php echo $page_titles[$current_page] ?? 'Início'; ?></h2>
                 </div>
 
                 <div class="top-nav-right">
@@ -173,7 +170,9 @@ $unread_count = count($unread_notifications);
                     <div class="notification-dropdown" id="notif-dropdown">
                         <div class="notif-header">
                             <span>Notificações</span>
-                            <button onclick="clearAllNotifications()" class="btn-mark-read" style="color: var(--danger); font-weight: 700;">Limpar todos</button>
+                            <?php if ($unread_count > 0): ?>
+                                <button onclick="markAllRead()" class="btn-mark-read">Marcar todas como lidas</button>
+                            <?php endif; ?>
                         </div>
                         <div class="notif-list">
                             <?php if (empty($unread_notifications)): ?>
@@ -232,12 +231,6 @@ async function markRead(id) {
 
 async function markAllRead() {
     const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read_all');
-    if (res.ok) window.location.reload();
-}
-
-async function clearAllNotifications() {
-    // Imediato, sem confirmação conforme pedido pelo usuário
-    const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/clear_all');
     if (res.ok) window.location.reload();
 }
 </script>

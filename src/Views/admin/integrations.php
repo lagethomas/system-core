@@ -2,9 +2,8 @@
 /** @var array $settings */
 /** @var string $active_tab */
 /** @var string $msg */
-
-include_once __DIR__ . '/../../../includes/header.php';
 ?>
+
 
 <div class="settings-tab-nav">
     <a href="?tab=email" class="nav-link-tab <?php echo $active_tab === 'email' ? 'active' : ''; ?>">
@@ -102,4 +101,4 @@ async function sendTestEmail() {
 }
 </script>
 
-<?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
+

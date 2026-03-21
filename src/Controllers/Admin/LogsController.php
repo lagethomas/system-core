@@ -8,7 +8,7 @@ use Auth;
 use LogRepository;
 
 class LogsController extends Controller {
-    public function index() {
+    public function index(): void {
         Auth::requireAdmin();
         
         global $pdo;

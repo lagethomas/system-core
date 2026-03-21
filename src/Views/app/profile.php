@@ -1,8 +1,7 @@
 <?php
 /** @var array $user */
-
-include_once __DIR__ . '/../../../includes/header.php';
 ?>
+
 
 <div class="profile-card">
     <div class="profile-info-header">
@@ -95,4 +94,4 @@ include_once __DIR__ . '/../../../includes/header.php';
     </form>
 </div>
 
-<?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
+

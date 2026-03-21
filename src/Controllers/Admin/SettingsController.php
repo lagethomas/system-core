@@ -9,7 +9,7 @@ use ThemeHelper;
 use Cache;
 
 class SettingsController extends Controller {
-    public function index() {
+    public function index(): void {
         Auth::requireAdmin();
         
         global $pdo;

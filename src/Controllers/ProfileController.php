@@ -8,7 +8,7 @@ use Auth;
 use PDO;
 
 class ProfileController extends Controller {
-    public function index() {
+    public function index(): void {
         $user_id = $_SESSION['user_id'];
         $user = \App\Core\Database::fetch("SELECT * FROM cp_users WHERE id = ?", [$user_id]);
 
@@ -21,7 +21,7 @@ class ProfileController extends Controller {
         ]);
     }
 
-    public function save() {
+    public function save(): void {
         $user_id = $_SESSION['user_id'];
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');

@@ -1,8 +1,7 @@
 <?php
 /** @var array $all_users */
-
-include_once __DIR__ . '/../../../includes/header.php';
 ?>
+
 
 <div class="users-header">
     <h2>Gerenciamento de Usuários</h2>
@@ -171,4 +170,4 @@ async function deleteUser(id) {
 }
 </script>
 
-<?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
+

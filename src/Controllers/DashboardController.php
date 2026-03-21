@@ -8,7 +8,7 @@ use Auth;
 use PDO;
 
 class DashboardController extends Controller {
-    public function index() {
+    public function index(): void {
         $user_name = $_SESSION['user_name'] ?? 'Usuário';
         $total_users = 0;
         $total_logs = 0;

@@ -5,9 +5,10 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use Auth;
+use Mailer;
 
 class IntegrationsController extends Controller {
-    public function index() {
+    public function index(): void {
         Auth::requireAdmin();
         
         global $pdo;
@@ -38,10 +39,11 @@ class IntegrationsController extends Controller {
         ]);
     }
 
-    public function testEmail() {
+    public function testEmail(): void {
         $email = $_POST['email'] ?? null;
         if (!$email) {
             $this->jsonResponse(['success' => false, 'message' => 'E-mail é obrigatório para o teste.'], 400);
+            return;
         }
 
         try {
@@ -55,15 +57,18 @@ class IntegrationsController extends Controller {
                 </div>
             ";
 
-            $sent = \Mailer::send($email, $subject, $body);
+            $sent = Mailer::send($email, $subject, $body);
 
             if ($sent) {
                 $this->jsonResponse(['success' => true, 'message' => 'E-mail de teste enviado com sucesso! Verifique sua caixa de entrada.']);
+                return;
             } else {
                 $this->jsonResponse(['success' => false, 'message' => 'Falha ao enviar e-mail de teste. Verifique suas credenciais SMTP.'], 500);
+                return;
             }
         } catch (\Exception $e) {
             $this->jsonResponse(['success' => false, 'message' => 'Erro: ' . $e->getMessage()], 500);
+            return;
         }
     }
 }

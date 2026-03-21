@@ -14,9 +14,8 @@ declare(strict_types=1);
  *   Cache::flush()
  */
 
-if (!class_exists('Cache')) {
-    class Cache {
-    /** @var \Redis|null Redis instance, null if not available */
+class Cache {
+    /** @var mixed */
     private static $redis = null;
     private static bool $redisAvailable = false;
     private static bool $initialized = false;
@@ -33,25 +32,26 @@ if (!class_exists('Cache')) {
             mkdir(self::$cacheDir, 0750, true);
         }
 
-        // Tentar conectar ao Redis se disponível (usa $_ENV para evitar avisos de IDE)
-        $redisHost = $_ENV['REDIS_HOST'] ?? '';
-        if (extension_loaded('redis') && !empty($redisHost)) {
+        // Tentar conectar ao Redis se estiver configurado e a extensão estiver presente
+        $redisHost = $_ENV['REDIS_HOST'] ?? (defined('REDIS_HOST') ? REDIS_HOST : null);
+        
+        if (class_exists('Redis') && $redisHost) {
             try {
-                $redisPort = (int)($_ENV['REDIS_PORT'] ?? 6379);
-                $redisPass = $_ENV['REDIS_PASSWORD'] ?? '';
-                $redisDb   = (int)($_ENV['REDIS_DB'] ?? 0);
+                $redisClass = 'Redis';
+                $r = new $redisClass();
+                $port = (int)($_ENV['REDIS_PORT'] ?? (defined('REDIS_PORT') ? REDIS_PORT : 6379));
+                $pass = $_ENV['REDIS_PASSWORD'] ?? (defined('REDIS_PASSWORD') ? REDIS_PASSWORD : null);
+                $db   = (int)($_ENV['REDIS_DB'] ?? (defined('REDIS_DB') ? REDIS_DB : 0));
 
-                /** @var \Redis $r */
-                $r = new \Redis();
-                $connected = $r->connect($redisHost, $redisPort, 2.0);
+                $connected = $r->connect($redisHost, $port, 2.0);
                 if ($connected) {
-                    if (!empty($redisPass)) {
-                        $r->auth($redisPass);
+                    if ($pass) {
+                        $r->auth($pass);
                     }
-                    if ($redisDb > 0) {
-                        $r->select($redisDb);
+                    if ($db > 0) {
+                        $r->select($db);
                     }
-                    $r->setOption(\Redis::OPT_PREFIX, 'saasflow:');
+                    $r->setOption(constant($redisClass . '::OPT_PREFIX'), 'saasflow:');
                     self::$redis = $r;
                     self::$redisAvailable = true;
                 }
@@ -158,5 +158,4 @@ if (!class_exists('Cache')) {
         self::init();
         return self::$redisAvailable;
     }
-}
 }

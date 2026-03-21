@@ -3,9 +3,8 @@
 /** @var string $start_date */
 /** @var string $end_date */
 /** @var string $action_filter */
-
-include_once __DIR__ . '/../../../includes/header.php';
 ?>
+
 
 <div class="log-filter-card">
     <form method="GET" class="logs-filter-form">
@@ -75,4 +74,4 @@ include_once __DIR__ . '/../../../includes/header.php';
     </div>
 </div>
 
-<?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
+

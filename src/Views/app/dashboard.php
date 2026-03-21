@@ -3,9 +3,8 @@
 /** @var int $total_users */
 /** @var int $total_logs */
 /** @var PDO $pdo */
-
-include_once __DIR__ . '/../../../includes/header.php';
 ?>
+
 
 <div class="welcome-header" style="margin-bottom: 30px; background: linear-gradient(135deg, var(--primary) 0%, #fff 300%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
     <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 5px;">Olá, <?php echo htmlspecialchars($user_name); ?>! 👋</h1>
@@ -70,4 +69,4 @@ include_once __DIR__ . '/../../../includes/header.php';
     </div>
 </div>
 
-<?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
+

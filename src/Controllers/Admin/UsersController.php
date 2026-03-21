@@ -8,7 +8,7 @@ use Auth;
 use UserRepository;
 
 class UsersController extends Controller {
-    public function index() {
+    public function index(): void {
         require_once __DIR__ . '/../../../includes/repositories/UserRepository.php';
         $userRepo = new UserRepository(\App\Core\Database::getInstance());
         $all_users = $userRepo->getAll();
@@ -18,7 +18,7 @@ class UsersController extends Controller {
         ]);
     }
 
-    public function save() {
+    public function save(): void {
         require_once __DIR__ . '/../../../includes/repositories/UserRepository.php';
         $userRepo = new UserRepository(\App\Core\Database::getInstance());
 
@@ -31,6 +31,7 @@ class UsersController extends Controller {
 
         if (!$name || !$email || (!$id && !$username)) {
             $this->jsonResponse(['success' => false, 'message' => 'Nome, e-mail e username são obrigatórios.'], 400);
+            return;
         }
 
         try {
@@ -38,6 +39,7 @@ class UsersController extends Controller {
             $existingUser = $userRepo->getByEmail($email);
             if ($existingUser && $existingUser['id'] != $id) {
                 $this->jsonResponse(['success' => false, 'message' => 'Este e-mail já está sendo utilizado por outro usuário.'], 400);
+                return;
             }
 
             // Check if username already exists
@@ -45,6 +47,7 @@ class UsersController extends Controller {
                 $existingByUsername = $userRepo->getByUsername($username);
                 if ($existingByUsername) {
                     $this->jsonResponse(['success' => false, 'message' => 'Este nome de usuário já está sendo utilizado.'], 400);
+                    return;
                 }
             }
 
@@ -76,12 +79,16 @@ class UsersController extends Controller {
         }
     }
 
-    public function delete() {
+    public function delete(): void {
         $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
-        if (!$id) $this->jsonResponse(['success' => false, 'message' => 'ID inválido.'], 400);
+        if (!$id) {
+            $this->jsonResponse(['success' => false, 'message' => 'ID inválido.'], 400);
+            return;
+        }
 
         if ($id == $_SESSION['user_id']) {
             $this->jsonResponse(['success' => false, 'message' => 'Você não pode excluir sua própria conta.'], 400);
+            return;
         }
 
         try {
@@ -91,6 +98,7 @@ class UsersController extends Controller {
 
             if (!$user) {
                 $this->jsonResponse(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
+                return;
             }
 
             // Delete associated image if exists

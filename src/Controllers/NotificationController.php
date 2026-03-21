@@ -6,7 +6,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 
 class NotificationController extends Controller {
-    public function read(int $id) {
+    public function read(int $id): void {
         $user_id = (int)$_SESSION['user_id'];
         require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
         $notifRepo = new \NotificationRepository(\App\Core\Database::getInstance());
@@ -15,21 +15,12 @@ class NotificationController extends Controller {
         $this->jsonResponse(['success' => true, 'message' => 'Lido']);
     }
 
-    public function readAll() {
+    public function readAll(): void {
         $user_id = (int)$_SESSION['user_id'];
         require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
         $notifRepo = new \NotificationRepository(\App\Core\Database::getInstance());
         
         $notifRepo->markAllAsRead($user_id);
         $this->jsonResponse(['success' => true, 'message' => 'Todas lidas']);
-    }
-
-    public function clearAll() {
-        $user_id = (int)$_SESSION['user_id'];
-        require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
-        $notifRepo = new \NotificationRepository(\App\Core\Database::getInstance());
-        
-        $notifRepo->clearAllByUser($user_id);
-        $this->jsonResponse(['success' => true, 'message' => 'Notificações limpas']);
     }
 }
