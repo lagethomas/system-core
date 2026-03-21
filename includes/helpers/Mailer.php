@@ -13,7 +13,7 @@ class Mailer {
      * Send an email using global SMTP settings
      */
     public static function send($to, $subject, $body, $altBody = '') {
-        $pdo = DB::getInstance();
+        $pdo = \DB::getInstance();
         $logFile = dirname(__DIR__, 2) . '/logs/email.log';
         $timestamp = date('Y-m-d H:i:s');
 

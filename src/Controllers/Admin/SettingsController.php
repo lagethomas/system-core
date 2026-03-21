@@ -13,7 +13,7 @@ class SettingsController extends Controller {
         Auth::requireAdmin();
         
         global $pdo;
-        require_once __DIR__ . '/../../../includes/theme_helper.php';
+        require_once __DIR__ . '/../../../includes/helpers/ThemeHelper.php';
         
         $active_tab = $_GET['tab'] ?? 'general';
 
@@ -41,6 +41,24 @@ class SettingsController extends Controller {
                 header("Location: " . SITE_URL . "/settings?tab=themes&msg=updated");
                 exit;
             }
+
+            if (isset($_POST['save_security'])) {
+                $keys = [
+                    'security_max_attempts', 'security_lockout_time', 'security_strong_password', 
+                    'security_session_timeout', 'security_ip_lockout', 'security_single_session',
+                    'security_log_days', 'security_log_limit'
+                ];
+                foreach ($keys as $key) {
+                    $val = trim((string)($_POST[$key] ?? ''));
+                    if ($key === 'security_strong_password' || $key === 'security_ip_lockout' || $key === 'security_single_session') $val = isset($_POST[$key]) ? '1' : '0';
+                    
+                    $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                    $stmt->execute([$key, $val, $val]);
+                }
+                Cache::delete('platform_settings');
+                header("Location: " . SITE_URL . "/settings?tab=security&msg=saved");
+                exit;
+            }
         }
 
         // Fetch Current Settings
@@ -48,7 +66,7 @@ class SettingsController extends Controller {
         $stmt->execute();
         $settings = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-        return $this->render('admin/settings', [
+        $this->render('admin/settings', [
             'settings' => $settings,
             'active_tab' => $active_tab
         ]);

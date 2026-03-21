@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS `cp_users` (
   `avatar` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
+  `current_session_id` varchar(255) DEFAULT NULL COMMENT 'Active session ID for single-session enforcement',
+  `last_pulse` datetime DEFAULT NULL COMMENT 'Last user activity heartbeat',
   `created_by` int(11) DEFAULT NULL,
   `zip_code` varchar(20) DEFAULT NULL,
   `street` varchar(255) DEFAULT NULL,
@@ -83,6 +85,14 @@ INSERT INTO `cp_settings` (`setting_key`, `setting_value`) VALUES
 ('smtp_host', 'localhost'),
 ('smtp_port', '587'),
 ('smtp_secure', 'tls'),
-('enable_system_logs', '1');
+('enable_system_logs', '1'),
+('security_max_attempts', '5'),
+('security_lockout_time', '15'),
+('security_single_session', '1'),
+('security_strong_password', '0'),
+('security_session_timeout', '120'),
+('security_ip_lockout', '0'),
+('security_log_days', '30'),
+('security_log_limit', '10000');
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -1,51 +1,8 @@
 <?php
-<<<<<<<< HEAD:src/Views/admin/settings.php
 /** @var array $settings */
 /** @var string $active_tab */
 
 include_once __DIR__ . '/../../../includes/header.php';
-========
-declare(strict_types=1);
-require_once '../../includes/DB.php';
-require_once dirname(__DIR__, 2) . "/includes/helpers/Auth.php";
-
-Auth::requireAdmin();
-
-$active_tab = $_GET['tab'] ?? 'general';
-
-// Fetch Current Settings
-$stmt = $pdo->prepare("SELECT setting_key, setting_value FROM cp_settings");
-$stmt->execute();
-$settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['save_general'])) {
-        $keys = ['system_name', 'enable_system_logs'];
-        foreach ($keys as $key) {
-            $val = trim($_POST[$key] ?? '');
-            if ($key === 'enable_system_logs') $val = isset($_POST[$key]) ? '1' : '0';
-            
-            $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
-            $stmt->execute([$key, $val, $val]);
-        }
-        Cache::delete('platform_settings');
-        header("Location: settings.php?tab=general&msg=saved");
-        exit;
-    }
-
-    if (isset($_POST['save_theme'])) {
-        $theme = $_POST['system_theme'] ?? 'gold-black';
-        $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('system_theme', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
-        $stmt->execute([$theme, $theme]);
-        Cache::delete('platform_settings');
-        
-        header("Location: settings.php?tab=themes&msg=updated");
-        exit;
-    }
-}
-
-include_once '../../includes/header.php';
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/admin/settings.php
 ?>
 
 <div class="settings-tab-nav">
@@ -54,6 +11,9 @@ include_once '../../includes/header.php';
     </a>
     <a href="?tab=themes" class="nav-link-tab <?php echo $active_tab === 'themes' ? 'active' : ''; ?>">
         <i class="fas fa-palette"></i> Temas
+    </a>
+    <a href="?tab=security" class="nav-link-tab <?php echo $active_tab === 'security' ? 'active' : ''; ?>">
+        <i class="fas fa-shield-alt"></i> Segurança
     </a>
 </div>
 
@@ -124,11 +84,132 @@ include_once '../../includes/header.php';
                 <i class="fas fa-save"></i> Aplicar Tema Selecionado
             </button>
         </form>
+
+    <?php elseif ($active_tab === 'security'): ?>
+        <form method="POST">
+            <div class="settings-header-box">
+                <h5><i class="fas fa-shield-alt text-primary"></i> Política de Segurança</h5>
+                <p>Configure regras de acesso e proteção para os dados do sistema.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <!-- Login Protection Card -->
+                <div class="card" style="background: rgba(var(--primary-rgb), 0.03); border: 1px solid rgba(var(--primary-rgb), 0.1);">
+                    <h6 style="color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-lock"></i> Proteção de Login
+                    </h6>
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label">Máximo de Tentativas</label>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="number" name="security_max_attempts" value="<?php echo htmlspecialchars($settings['security_max_attempts'] ?? '5'); ?>" class="form-control" style="width: 100px;">
+                            <small class="text-muted">Tentativas antes do bloqueio</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tempo de Bloqueio (minutos)</label>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="number" name="security_lockout_time" value="<?php echo htmlspecialchars($settings['security_lockout_time'] ?? '30'); ?>" class="form-control" style="width: 100px;">
+                            <small class="text-muted">Duração do bloqueio preventivo</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session & Requirements Card -->
+                <div class="card" style="background: rgba(255,255,255,0.01); border: 1px solid var(--border);">
+                    <h6 style="color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-key"></i> Requisitos & Sessão
+                    </h6>
+
+                    <div class="form-group mb-4">
+                        <label class="switch-label" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <div>
+                                <span style="font-size: 14px;">Exigir Senhas Fortes</span>
+                                <small class="text-muted" style="display: block; font-size: 11px;">Mínimo 8 caracteres, números e símbolos</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="security_strong_password" value="1" <?php echo ($settings['security_strong_password'] ?? '0') === '1' ? 'checked' : ''; ?>>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Timeout de Sessão (horas)</label>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <select name="security_session_timeout" class="form-control" style="width: 120px;">
+                                <option value="2" <?php echo ($settings['security_session_timeout'] ?? '') === '2' ? 'selected' : ''; ?>>2 Horas</option>
+                                <option value="8" <?php echo ($settings['security_session_timeout'] ?? '') === '8' ? 'selected' : ''; ?>>8 Horas</option>
+                                <option value="24" <?php echo ($settings['security_session_timeout'] ?? '') === '24' ? 'selected' : ''; ?>>24 Horas</option>
+                                <option value="168" <?php echo ($settings['security_session_timeout'] ?? '') === '168' ? 'selected' : ''; ?>>7 Dias</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Global Policies Card -->
+                <div class="card" style="background: rgba(var(--accent-rgb), 0.02); border: 1px solid rgba(var(--accent-rgb), 0.1);">
+                    <h6 style="color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-shield"></i> Políticas Globais
+                    </h6>
+
+                    <div class="form-group mb-4">
+                        <label class="switch-label" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <div>
+                                <span style="font-size: 14px;">Bloqueio por IP</span>
+                                <small class="text-muted" style="display: block; font-size: 11px;">Bloquear IPs após x falhas críticas</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="security_ip_lockout" value="1" <?php echo ($settings['security_ip_lockout'] ?? '0') === '1' ? 'checked' : ''; ?>>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="switch-label" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <div>
+                                <span style="font-size: 14px;">Logins Simultâneos</span>
+                                <small class="text-muted" style="display: block; font-size: 11px;">Permitir apenas uma sessão ativa por usuário</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="security_single_session" value="1" <?php echo ($settings['security_single_session'] ?? '0') === '1' ? 'checked' : ''; ?>>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Log Retention Card -->
+                <div class="card" style="background: rgba(255,255,255,0.01); border: 1px solid var(--border);">
+                    <h6 style="color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-history"></i> Retenção de Logs
+                    </h6>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Manter logs por (dias)</label>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="number" name="security_log_days" value="<?php echo htmlspecialchars($settings['security_log_days'] ?? '30'); ?>" class="form-control" style="width: 100px;">
+                            <small class="text-muted">Logs antigos serão apagados</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Limite de registros</label>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="number" name="security_log_limit" value="<?php echo htmlspecialchars($settings['security_log_limit'] ?? '5000'); ?>" class="form-control" style="width: 100px;">
+                            <small class="text-muted">Máximo de entradas no banco</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" name="save_security" class="btn-primary">
+                <i class="fas fa-save"></i> Salvar Diretrizes de Segurança
+            </button>
+        </form>
     <?php endif; ?>
 </div>
 
-<<<<<<<< HEAD:src/Views/admin/settings.php
 <?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
-========
-<?php include_once '../../includes/footer.php'; ?>
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/admin/settings.php

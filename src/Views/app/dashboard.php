@@ -1,31 +1,10 @@
 <?php
-<<<<<<<< HEAD:src/Views/app/dashboard.php
 /** @var string $user_name */
 /** @var int $total_users */
 /** @var int $total_logs */
 /** @var PDO $pdo */
 
 include_once __DIR__ . '/../../../includes/header.php';
-========
-declare(strict_types=1);
-require_once '../../includes/DB.php';
-require_once dirname(__DIR__, 2) . "/includes/helpers/Auth.php";
-
-Auth::requireLogin();
-
-$user_name = $_SESSION['user_name'] ?? 'Usuário';
-
-// Generic Stats for the Core
-$total_users = 0;
-$total_logs = 0;
-
-try {
-    $total_users = $pdo->query("SELECT COUNT(*) FROM cp_users")->fetchColumn() ?: 0;
-    $total_logs = $pdo->query("SELECT COUNT(*) FROM cp_logs")->fetchColumn() ?: 0;
-} catch (Exception $e) {}
-
-include_once '../../includes/header.php';
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/app/dashboard.php
 ?>
 
 <div class="welcome-header" style="margin-bottom: 30px; background: linear-gradient(135deg, var(--primary) 0%, #fff 300%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
@@ -91,8 +70,4 @@ include_once '../../includes/header.php';
     </div>
 </div>
 
-<<<<<<<< HEAD:src/Views/app/dashboard.php
 <?php include_once __DIR__ . '/../../../includes/footer.php'; ?>
-========
-<?php include_once '../../includes/footer.php'; ?>
->>>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9:public/app/dashboard.php

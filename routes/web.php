@@ -2,10 +2,16 @@
 /** @var App\Core\Router $router */
 
 // Middleware Definitions
-$auth = \App\Middleware\AuthMiddleware::class;
+$auth  = \App\Middleware\AuthMiddleware::class;
 $admin = \App\Middleware\AdminMiddleware::class;
 
-$router->add('GET', '/', ['controller' => 'DashboardController', 'method' => 'index', 'middlewares' => [$auth]]);
+// ── Public Routes (no auth required) ────────────────────────────
+$router->add('GET',  '/login',  ['controller' => 'LoginController', 'method' => 'index']);
+$router->add('POST', '/login',  ['controller' => 'LoginController', 'method' => 'attempt']);
+$router->add('GET',  '/logout', ['controller' => 'LoginController', 'method' => 'logout']);
+
+// ── Authenticated Routes ─────────────────────────────────────────
+$router->add('GET', '/',          ['controller' => 'DashboardController', 'method' => 'index', 'middlewares' => [$auth]]);
 $router->add('GET', '/dashboard', ['controller' => 'DashboardController', 'method' => 'index', 'middlewares' => [$auth]]);
 
 $router->add('GET', '/profile', ['controller' => 'ProfileController', 'method' => 'index', 'middlewares' => [$auth]]);
@@ -27,6 +33,7 @@ $router->add('POST', '/settings', ['controller' => 'Admin\\SettingsController', 
 
 $router->add('GET', '/api/notifications/read/{id}', ['controller' => 'NotificationController', 'method' => 'read', 'middlewares' => [$auth]]);
 $router->add('GET', '/api/notifications/read_all', ['controller' => 'NotificationController', 'method' => 'readAll', 'middlewares' => [$auth]]);
+$router->add('GET', '/api/notifications/clear_all', ['controller' => 'NotificationController', 'method' => 'clearAll', 'middlewares' => [$auth]]);
 
 $router->add('GET', '/admin/integrations', ['controller' => 'Admin\\IntegrationsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);
 $router->add('POST', '/admin/integrations', ['controller' => 'Admin\\IntegrationsController', 'method' => 'index', 'middlewares' => [$auth, $admin]]);

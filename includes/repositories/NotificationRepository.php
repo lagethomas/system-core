@@ -47,4 +47,9 @@ class NotificationRepository {
         $stmt = $this->pdo->prepare("DELETE FROM cp_notifications WHERE id = ? AND user_id = ?");
         return $stmt->execute([$id, $user_id]);
     }
+
+    public function clearAllByUser(int $user_id): bool {
+        $stmt = $this->pdo->prepare("DELETE FROM cp_notifications WHERE user_id = ?");
+        return $stmt->execute([$user_id]);
+    }
 }

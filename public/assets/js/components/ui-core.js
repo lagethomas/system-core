@@ -56,6 +56,7 @@ const UI = {
 
         if (typeof this.initAutocomplete === 'function') this.initAutocomplete();
         if (typeof this.initMasks === 'function') this.initMasks();
+        if (typeof this.initPasswordToggles === 'function') this.initPasswordToggles();
     },
 
     closeModal() {
@@ -206,6 +207,63 @@ const UI = {
                     maxOptions: 50,
                     sortField: { field: "text", direction: "asc" }
                 });
+            }
+        });
+    },
+    
+    togglePassword(btn, targetId) {
+        const input = document.getElementById(targetId);
+        if (!input) return;
+        
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.classList.toggle('fa-eye', !isPassword);
+            icon.classList.toggle('fa-eye-slash', isPassword);
+            
+            // Animation
+            icon.style.transform = 'scale(1.2)';
+            setTimeout(() => icon.style.transform = 'scale(1)', 200);
+        }
+    },
+
+    initPasswordToggles() {
+        document.querySelectorAll('input[type="password"]').forEach(input => {
+            if (input.dataset.toggleInit) return;
+            input.dataset.toggleInit = 'true';
+            
+            // Create wrapper if not already wrapped
+            let wrapper = input.parentElement;
+            if (!wrapper.classList.contains('password-toggle-wrapper')) {
+                wrapper = document.createElement('div');
+                wrapper.className = 'password-toggle-wrapper relative';
+                input.parentNode.insertBefore(wrapper, input);
+                wrapper.appendChild(input);
+            }
+            
+            // Create toggle button
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'password-toggle-btn';
+            btn.title = 'Mostrar/Ocultar Senha';
+            btn.innerHTML = '<i class="fas fa-eye"></i>';
+            
+            if (!input.id) input.id = 'pwd-' + Math.random().toString(36).substr(2, 9);
+            
+            btn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.togglePassword(btn, input.id);
+            };
+            
+            wrapper.appendChild(btn);
+            
+            // If there's an existing generate-password button, we may need to adjust spacing
+            const genBtn = wrapper.querySelector('.btn-generate-password');
+            if (genBtn) {
+                btn.style.right = '45px'; 
             }
         });
     }

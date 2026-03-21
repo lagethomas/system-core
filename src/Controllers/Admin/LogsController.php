@@ -27,7 +27,7 @@ class LogsController extends Controller {
 
         $logs = $logRepo->getAll($filters, 500);
 
-        return $this->render('admin/logs', [
+        $this->render('admin/logs', [
             'logs' => $logs,
             'start_date' => $start_date,
             'end_date' => $end_date,

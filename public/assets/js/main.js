@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.handleUrlMessages();
         UI.initMasks();
         UI.initAutocomplete();
+        UI.initPasswordToggles();
     }
 
     // 3. Table Responsiveness Wrapper

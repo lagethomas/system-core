@@ -31,7 +31,7 @@ class IntegrationsController extends Controller {
         $stmt->execute();
         $settings = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-        return $this->render('admin/integrations', [
+        $this->render('admin/integrations', [
             'settings' => $settings,
             'active_tab' => $active_tab,
             'msg' => $msg
@@ -41,7 +41,7 @@ class IntegrationsController extends Controller {
     public function testEmail() {
         $email = $_POST['email'] ?? null;
         if (!$email) {
-            return $this->jsonResponse(['success' => false, 'message' => 'E-mail é obrigatório para o teste.'], 400);
+            $this->jsonResponse(['success' => false, 'message' => 'E-mail é obrigatório para o teste.'], 400);
         }
 
         try {
@@ -58,12 +58,12 @@ class IntegrationsController extends Controller {
             $sent = \Mailer::send($email, $subject, $body);
 
             if ($sent) {
-                return $this->jsonResponse(['success' => true, 'message' => 'E-mail de teste enviado com sucesso! Verifique sua caixa de entrada.']);
+                $this->jsonResponse(['success' => true, 'message' => 'E-mail de teste enviado com sucesso! Verifique sua caixa de entrada.']);
             } else {
-                return $this->jsonResponse(['success' => false, 'message' => 'Falha ao enviar e-mail de teste. Verifique suas credenciais SMTP.'], 500);
+                $this->jsonResponse(['success' => false, 'message' => 'Falha ao enviar e-mail de teste. Verifique suas credenciais SMTP.'], 500);
             }
         } catch (\Exception $e) {
-            return $this->jsonResponse(['success' => false, 'message' => 'Erro: ' . $e->getMessage()], 500);
+            $this->jsonResponse(['success' => false, 'message' => 'Erro: ' . $e->getMessage()], 500);
         }
     }
 }

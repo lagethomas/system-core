@@ -5167,17 +5167,11 @@ class PHPMailer
             $privKey = openssl_pkey_get_private($privKeyStr);
         }
         if (openssl_sign($signHeader, $signature, $privKey, 'sha256WithRSAEncryption')) {
-            if (\PHP_MAJOR_VERSION < 8) {
-                // phpcs:ignore PHPCompatibility.FunctionUse.RemovedFunctions.openssl_pkey_freeDeprecated
-                openssl_pkey_free($privKey);
-            }
+            // openssl_pkey_free is unnecessary in PHP 8.0+ as keys are automatically collected.
 
             return base64_encode($signature);
         }
-        if (\PHP_MAJOR_VERSION < 8) {
-            // phpcs:ignore PHPCompatibility.FunctionUse.RemovedFunctions.openssl_pkey_freeDeprecated
-            openssl_pkey_free($privKey);
-        }
+        // openssl_pkey_free is unnecessary in PHP 8.0+ as keys are automatically collected.
 
         return '';
     }

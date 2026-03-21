@@ -6,7 +6,7 @@ declare(strict_types=1);
  */
 class Logger {
     public static function log(string $action, ?string $description = null): void {
-        $pdo = DB::getInstance();
+        $pdo = \DB::getInstance();
         
         $logRepo = new LogRepository($pdo);
         $data = [

@@ -16,7 +16,7 @@ class ProfileController extends Controller {
             die("Usuário não encontrado.");
         }
 
-        return $this->render('app/profile', [
+        $this->render('app/profile', [
             'user' => $user
         ]);
     }
@@ -28,14 +28,14 @@ class ProfileController extends Controller {
         $password = $_POST['password'] ?? null;
 
         if (!$name || !$email) {
-            return $this->jsonResponse(['success' => false, 'message' => 'Nome e e-mail são obrigatórios.'], 400);
+            $this->jsonResponse(['success' => false, 'message' => 'Nome e e-mail são obrigatórios.'], 400);
         }
 
         try {
             // Check if email belongs to another user
             $existing = \App\Core\Database::fetch("SELECT id FROM cp_users WHERE email = ? AND id != ?", [$email, $user_id]);
             if ($existing) {
-                return $this->jsonResponse(['success' => false, 'message' => 'Este e-mail já está sendo utilizado por outra conta.'], 400);
+                $this->jsonResponse(['success' => false, 'message' => 'Este e-mail já está sendo utilizado por outra conta.'], 400);
             }
 
             $data = [
@@ -74,9 +74,9 @@ class ProfileController extends Controller {
             require_once __DIR__ . '/../../includes/logs.php';
             \Logger::log('edit_profile', "Usuário atualizou seus próprios dados via Controller.");
 
-            return $this->jsonResponse(['success' => true, 'message' => 'Perfil atualizado com sucesso!']);
+            $this->jsonResponse(['success' => true, 'message' => 'Perfil atualizado com sucesso!']);
         } catch (\Exception $e) {
-            return $this->jsonResponse(['success' => false, 'message' => 'Erro: ' . $e->getMessage()], 500);
+            $this->jsonResponse(['success' => false, 'message' => 'Erro: ' . $e->getMessage()], 500);
         }
     }
 }

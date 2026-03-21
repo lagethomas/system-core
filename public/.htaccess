@@ -1,9 +1,40 @@
-RewriteEngine On
-RewriteBase /
+Options -Indexes
 
-# Tenta servir o arquivo ou diretório real
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+# ─────────────────────────────────────────────────────────────────
+# SaaSFlow Core — Apache .htaccess
+# DOCUMENT ROOT deve apontar para a pasta /public deste projeto.
+# ─────────────────────────────────────────────────────────────────
 
-# Se não existir, manda tudo para o index.php
-RewriteRule ^ index.php [L,QSA]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. Se for arquivo real (assets, login.php, etc), serve direto
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # 2. Tudo o mais passa pelo Front Controller (sem .php na URL)
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# ─── Segurança ───────────────────────────────────────────────────
+# Bloqueia acesso a arquivos sensíveis
+<FilesMatch "\.(env|log|sql|sh|bak|git|htpasswd)$">
+    Require all denied
+</FilesMatch>
+
+# Compressão GZIP para performance
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json
+</IfModule>
+
+# Cache de assets estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css              "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png             "access plus 1 month"
+    ExpiresByType image/webp            "access plus 1 month"
+    ExpiresByType image/svg+xml         "access plus 1 month"
+    ExpiresByType font/woff2            "access plus 1 year"
+</IfModule>

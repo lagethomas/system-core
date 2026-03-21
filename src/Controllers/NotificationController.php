@@ -12,7 +12,7 @@ class NotificationController extends Controller {
         $notifRepo = new \NotificationRepository(\App\Core\Database::getInstance());
         
         $notifRepo->markAsRead($id, $user_id);
-        return $this->jsonResponse(['success' => true, 'message' => 'Lido']);
+        $this->jsonResponse(['success' => true, 'message' => 'Lido']);
     }
 
     public function readAll() {
@@ -21,6 +21,15 @@ class NotificationController extends Controller {
         $notifRepo = new \NotificationRepository(\App\Core\Database::getInstance());
         
         $notifRepo->markAllAsRead($user_id);
-        return $this->jsonResponse(['success' => true, 'message' => 'Todas lidas']);
+        $this->jsonResponse(['success' => true, 'message' => 'Todas lidas']);
+    }
+
+    public function clearAll() {
+        $user_id = (int)$_SESSION['user_id'];
+        require_once __DIR__ . '/../../includes/repositories/NotificationRepository.php';
+        $notifRepo = new \NotificationRepository(\App\Core\Database::getInstance());
+        
+        $notifRepo->clearAllByUser($user_id);
+        $this->jsonResponse(['success' => true, 'message' => 'Notificações limpas']);
     }
 }

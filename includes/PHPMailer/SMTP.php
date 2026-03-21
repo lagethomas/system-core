@@ -770,7 +770,7 @@ class SMTP
         }
     }
 
-    private function iterateLines($s)
+    private function iterateLines($s): \Generator
     {
         $start = 0;
         $length = strlen($s);

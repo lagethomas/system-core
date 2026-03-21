@@ -1,12 +1,9 @@
 <?php
 declare(strict_types=1);
-<<<<<<< HEAD
 global $pdo;
-require_once 'auth.php';
-require_once 'csrf.php';
-require_once 'repositories/NotificationRepository.php';
-=======
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9
+require_once __DIR__ . '/helpers/Auth.php';
+require_once __DIR__ . '/helpers/CSRF.php';
+require_once __DIR__ . '/repositories/NotificationRepository.php';
 
 $user_id = (int)($_SESSION['user_id'] ?? 0);
 $user_name = $_SESSION['user_name'] ?? 'Usuário';
@@ -77,17 +74,9 @@ $unread_count = count($unread_notifications);
     <?php 
     // Auto-load page specific CSS from modules
     $page_name = str_replace('.php', '', $current_page);
-<<<<<<< HEAD
     $css_path = dirname(__FILE__) . "/../public/assets/css/modules/{$page_name}.css";
     if (file_exists($css_path)) {
         echo '<link rel="stylesheet" href="' . \App\Core\Controller::asset('/assets/css/modules/' . $page_name . '.css') . '">';
-=======
-    $css_relative_path = "assets/css/modules/{$page_name}.css";
-    $css_full_path = dirname(__DIR__) . "/public/" . $css_relative_path;
-    
-    if (file_exists($css_full_path)) {
-        echo '<link rel="stylesheet" href="' . $path_prefix . $css_relative_path . '?v=' . time() . '">';
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9
     }
     ?>
 
@@ -156,7 +145,7 @@ $unread_count = count($unread_notifications);
                     <a href="<?php echo SITE_URL; ?>/profile" class="btn-secondary" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-main); background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
                         <i class="fas fa-user-circle"></i> Meu Perfil Maroto
                     </a>
-                    <a href="<?php echo SITE_URL; ?>/logout.php" class="user-dropdown-item danger">
+                    <a href="<?php echo SITE_URL; ?>/logout" class="user-dropdown-item danger">
                         <i class="fas fa-sign-out-alt"></i> Sair do Sistema
                     </a>
                 </div>
@@ -169,7 +158,7 @@ $unread_count = count($unread_notifications);
                     <button class="menu-toggle" onclick="toggleSidebar()">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h2 class="page-title"><?php echo $page_titles[$current_page] ?? 'Início'; ?></h2>
+                    <h2 class="page-title"><?php echo (string)($page_titles[$current_page] ?? 'Início'); ?></h2>
                 </div>
 
                 <div class="top-nav-right">
@@ -177,16 +166,14 @@ $unread_count = count($unread_notifications);
                     <div class="notif-trigger" id="notif-trigger">
                         <i class="fas fa-bell"></i>
                         <?php if ($unread_count > 0): ?>
-                            <span class="notif-badge"><?php echo $unread_count; ?></span>
+                            <span class="notif-badge"><?php echo (string)$unread_count; ?></span>
                         <?php endif; ?>
                     </div>
 
                     <div class="notification-dropdown" id="notif-dropdown">
                         <div class="notif-header">
                             <span>Notificações</span>
-                            <?php if ($unread_count > 0): ?>
-                                <button onclick="markAllRead()" class="btn-mark-read">Marcar todas como lidas</button>
-                            <?php endif; ?>
+                            <button onclick="clearAllNotifications()" class="btn-mark-read" style="color: var(--danger); font-weight: 700;">Limpar todos</button>
                         </div>
                         <div class="notif-list">
                             <?php if (empty($unread_notifications)): ?>
@@ -240,23 +227,17 @@ document.addEventListener('click', function() {
 });
 
 async function markRead(id) {
-<<<<<<< HEAD
     await fetch('<?php echo SITE_URL; ?>/api/notifications/read/' + id);
 }
 
 async function markAllRead() {
     const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/read_all');
-=======
-    await fetch('<?php echo $path_prefix; ?>api/notifications.php?action=read&id=' + id, {
-        headers: { 'X-CSRF-Token': '<?php echo CSRF::generateToken(); ?>' }
-    });
+    if (res.ok) window.location.reload();
 }
 
-async function markAllRead() {
-    const res = await fetch('<?php echo $path_prefix; ?>api/notifications.php?action=read_all', {
-        headers: { 'X-CSRF-Token': '<?php echo CSRF::generateToken(); ?>' }
-    });
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9
+async function clearAllNotifications() {
+    // Imediato, sem confirmação conforme pedido pelo usuário
+    const res = await fetch('<?php echo SITE_URL; ?>/api/notifications/clear_all');
     if (res.ok) window.location.reload();
 }
 </script>

@@ -1,11 +1,7 @@
 <?php
 declare(strict_types=1);
-<<<<<<< HEAD
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/auth.php';
-=======
 require_once __DIR__ . '/../includes/DB.php';
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9
+require_once __DIR__ . '/../includes/helpers/Auth.php';
 
 if (Auth::isLoggedIn()) {
     header('Location: dashboard');
@@ -15,7 +11,6 @@ if (Auth::isLoggedIn()) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-<<<<<<< HEAD
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -36,11 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $error = 'Credenciais inválidas.';
         }
-=======
-    // CSRF Validation
-    if (!CSRF::verifyToken($_POST['csrf_token'] ?? '')) {
-        $error = 'Erro de segurança (CSRF). Tente novamente.';
->>>>>>> ab660bf99d6d155d59d9302691d0bc8f9c62eeb9
     } else {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -73,11 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - <?php echo htmlspecialchars($platform_settings['system_name'] ?? 'SaaSFlow Core'); ?></title>
-    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="assets/css/modules/auth.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo (string)time(); ?>">
+    <link rel="stylesheet" href="assets/css/modules/auth.css?v=<?php echo (string)time(); ?>">
     <?php 
         $theme_slug = $platform_settings['system_theme'] ?? 'gold-black';
-        echo '<link rel="stylesheet" href="assets/css/theme/' . $theme_slug . '.css?v=' . time() . '">';
+        echo '<link rel="stylesheet" href="assets/css/theme/' . $theme_slug . '.css?v=' . (string)time() . '">';
     ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -119,7 +109,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 
+    <script src="assets/js/components/ui-core.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof UI !== 'undefined') {
+                UI.initPasswordToggles();
+            }
+        });
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const btn = document.getElementById('btnLogin');
             const btnText = btn.querySelector('.btn-text');
