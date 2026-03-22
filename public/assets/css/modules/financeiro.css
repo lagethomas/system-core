@@ -66,8 +66,8 @@
 /* Layout com Gráfico */
 .finance-main-grid {
     display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 25px;
+    grid-template-columns: 1fr;
+    gap: 30px;
     margin-top: 30px;
 }
 
@@ -103,28 +103,4 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
 }
-.btn-finance-action {
-    padding: 10px 18px;
-    font-size: 13px;
-    border-radius: 8px;
-    color: #fff !important;
-    border: none !important;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: var(--transition);
-}
 
-.btn-finance-entrada {
-    background: #10b981 !important;
-}
-
-.btn-finance-saida {
-    background: #ef4444 !important;
-}
-
-.btn-finance-action:hover {
-    filter: brightness(1.1);
-    transform: translateY(-2px);
-}
