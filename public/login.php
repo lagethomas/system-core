@@ -4,7 +4,6 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/csrf.php';
 require_once __DIR__ . '/../includes/logs.php';
-require_once __DIR__ . '/../includes/helpers/Nonce.php';
 
 if (Auth::isLoggedIn()) {
     header('Location: dashboard');
@@ -14,14 +13,9 @@ if (Auth::isLoggedIn()) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // CSRF & Nonce Validation
-    $csrf_token = $_POST['csrf_token'] ?? '';
-    $login_nonce = $_POST['login_nonce'] ?? '';
-
-    if (!CSRF::verifyToken($csrf_token)) {
+    // CSRF Validation
+    if (!CSRF::verifyToken($_POST['csrf_token'] ?? '')) {
         $error = 'Erro de segurança (CSRF). Tente novamente.';
-    } elseif (!Nonce::verify($login_nonce, 'user_login', 0)) {
-        $error = 'Erro de segurança (Nonce). Tente novamente.';
     } else {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -35,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_regenerate_id(true);
                 Auth::login($user);
                 
-                \App\Helpers\Logger::log('login', "Login realizado.");
+                Logger::log('login', "Login realizado.");
                 
                 header('Location: dashboard');
                 exit;
@@ -81,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST" id="loginForm">
             <input type="hidden" name="csrf_token" value="<?php echo CSRF::generateToken(); ?>">
-            <input type="hidden" name="login_nonce" value="<?php echo Nonce::create('user_login', 0); ?>">
             <div class="form-group">
                 <label class="auth-label">Usuário</label>
                 <input type="text" name="username" class="form-control" placeholder="Seu usuário" required autofocus>

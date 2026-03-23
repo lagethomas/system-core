@@ -18,7 +18,6 @@
     </div>
 
     <form action="<?php echo SITE_URL; ?>/api/profile/save" class="ajax-form" id="profileForm" enctype="multipart/form-data">
-        <input type="hidden" name="nonce" value="<?php echo $nonce; ?>">
         <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="UI.uploadProfilePicture(this)">
         <div class="profile-form-grid">
             <div class="form-group">
@@ -44,8 +43,8 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Nova Senha</label>
-                    <div class="password-toggle-wrapper relative">
-                        <input type="password" name="password" id="profile-password" class="form-control w-100 pr-80" placeholder="Deixe em branco para manter">
+                    <div class="relative">
+                        <input type="password" name="password" id="profile-password" class="form-control w-100 pr-5" placeholder="Deixe em branco para manter">
                         <button type="button" onclick="UI.generatePassword('profile-password')" class="btn-generate-password" title="Gerar Senha">
                             <i class="fas fa-random"></i>
                         </button>

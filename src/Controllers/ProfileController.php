@@ -6,7 +6,6 @@ namespace App\Controllers;
 use App\Core\Controller;
 use Auth;
 use PDO;
-use App\Helpers\Logger;
 
 class ProfileController extends Controller {
     public function index(): void {
@@ -18,17 +17,11 @@ class ProfileController extends Controller {
         }
 
         $this->render('app/profile', [
-            'user' => $user,
-            'nonce' => \Nonce::create('save_profile')
+            'user' => $user
         ]);
     }
 
     public function save(): void {
-        if (!\Nonce::verify($_POST['nonce'] ?? '', 'save_profile')) {
-            $this->jsonResponse(['success' => false, 'message' => 'Erro de segurança (Nonce).'], 403);
-            return;
-        }
-
         $user_id = $_SESSION['user_id'];
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -36,7 +29,6 @@ class ProfileController extends Controller {
 
         if (!$name || !$email) {
             $this->jsonResponse(['success' => false, 'message' => 'Nome e e-mail são obrigatórios.'], 400);
-            return;
         }
 
         try {
@@ -44,7 +36,6 @@ class ProfileController extends Controller {
             $existing = \App\Core\Database::fetch("SELECT id FROM cp_users WHERE email = ? AND id != ?", [$email, $user_id]);
             if ($existing) {
                 $this->jsonResponse(['success' => false, 'message' => 'Este e-mail já está sendo utilizado por outra conta.'], 400);
-                return;
             }
 
             $data = [
@@ -81,7 +72,7 @@ class ProfileController extends Controller {
             $_SESSION['user_name'] = $name;
             
             require_once __DIR__ . '/../../includes/logs.php';
-            Logger::log('edit_profile', "Usuário atualizou seus próprios dados via Controller.");
+            \Logger::log('edit_profile', "Usuário atualizou seus próprios dados via Controller.");
 
             $this->jsonResponse(['success' => true, 'message' => 'Perfil atualizado com sucesso!']);
         } catch (\Exception $e) {

@@ -31,19 +31,13 @@ $page_titles = [
     'users.php' => 'Usuários',
     'users' => 'Usuários',
     'logs.php' => 'Logs Globais',
-    'logs' => 'Logs do Sistema',
+    'logs' => 'Logs Globais',
     'settings.php' => 'Configurações',
     'settings' => 'Configurações',
     'profile.php' => 'Meu Perfil',
     'profile' => 'Meu Perfil',
     'integrations.php' => 'Integrações',
-    'integrations' => 'Integrações',
-    'comanda' => 'Mapa de Mesas',
-    'produtos' => 'Gestão de Produtos',
-    'financeiro' => 'Módulo Financeiro',
-    'pdv' => 'Frente de Caixa (PDV)',
-    'caixa' => 'Controle de Caixa',
-    'relatorios' => 'Relatórios e Análises'
+    'integrations' => 'Integrações'
 ];
 
 // Fetch Notifications
@@ -64,10 +58,6 @@ $unread_count = count($unread_notifications);
     $system_name = $platform_settings['system_name'] ?? 'SaaSFlow Core';
     ?>
     <title><?php echo htmlspecialchars(($page_titles[$current_page] ?? 'Início') . ' | ' . ($system_name ?? 'SaaSFlow')); ?></title>
-    
-    <?php if (!empty($platform_settings['system_logo'])): ?>
-        <link rel="icon" type="image/webp" href="<?php echo SITE_URL . $platform_settings['system_logo']; ?>">
-    <?php endif; ?>
     
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/style.css'); ?>">
     <link rel="stylesheet" href="<?php echo \App\Core\Controller::asset('/assets/css/theme/' . $theme_slug . '.css'); ?>">
@@ -97,11 +87,7 @@ $unread_count = count($unread_notifications);
             <div class="sidebar-header">
                 <a href="<?php echo SITE_URL; ?>/dashboard" class="logo">
                     <div class="sidebar-logo-icon">
-                        <?php if (!empty($platform_settings['system_logo'])): ?>
-                            <img src="<?php echo SITE_URL . $platform_settings['system_logo']; ?>" style="width: 100%; height: 100%; object-fit: contain;">
-                        <?php else: ?>
-                            <i class="fas fa-layer-group"></i>
-                        <?php endif; ?>
+                        <i class="fas fa-layer-group"></i>
                     </div>
                     <span><?php echo htmlspecialchars($system_name); ?></span>
                 </a>
@@ -114,36 +100,6 @@ $unread_count = count($unread_notifications);
                     <li class="<?php echo ($current_page == 'dashboard.php' || $current_page == 'dashboard') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/dashboard">
                             <i class="fas fa-th-large"></i> <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo ($current_page == 'comanda') ? 'active' : ''; ?>">
-                        <a href="<?php echo SITE_URL; ?>/app/comanda">
-                            <i class="fas fa-th"></i> <span>Mapa de Mesas</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo ($current_page == 'pdv') ? 'active' : ''; ?>">
-                        <a href="<?php echo SITE_URL; ?>/app/pdv">
-                            <i class="fas fa-shopping-cart"></i> <span>Frente de Caixa (PDV)</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo ($current_page == 'caixa') ? 'active' : ''; ?>">
-                        <a href="<?php echo SITE_URL; ?>/app/caixa">
-                            <i class="fas fa-cash-register"></i> <span>Controle de Caixa</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo ($current_page == 'produtos') ? 'active' : ''; ?>">
-                        <a href="<?php echo SITE_URL; ?>/app/produtos">
-                            <i class="fas fa-box"></i> <span>Produtos</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo ($current_page == 'financeiro') ? 'active' : ''; ?>">
-                        <a href="<?php echo SITE_URL; ?>/app/financeiro">
-                            <i class="fas fa-wallet"></i> <span>Financeiro</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo ($current_page == 'relatorios') ? 'active' : ''; ?>">
-                        <a href="<?php echo SITE_URL; ?>/app/relatorios">
-                            <i class="fas fa-chart-bar"></i> <span>Relatórios</span>
                         </a>
                     </li>
                     
@@ -166,11 +122,6 @@ $unread_count = count($unread_notifications);
                     <li class="<?php echo ($current_page == 'settings.php' || $current_page == 'settings') ? 'active' : ''; ?>">
                         <a href="<?php echo SITE_URL; ?>/settings">
                             <i class="fas fa-cogs"></i> <span>Configurações</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo ($current_page == 'categorias' || $current_page == 'admin/categorias') ? 'active' : ''; ?>">
-                        <a href="<?php echo SITE_URL; ?>/admin/categorias">
-                            <i class="fas fa-tags"></i> <span>Categorias</span>
                         </a>
                     </li>
                     <?php endif; ?>
