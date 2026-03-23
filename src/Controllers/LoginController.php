@@ -41,6 +41,19 @@ class LoginController extends Controller {
         $password     = $_POST['password'] ?? '';
         $force        = isset($_POST['force_login']); // user chose to force-logout old session
 
+        // ── SECURITY CHECKS (Rule 39) ──────────────────────────
+        if (Auth::isIpBlocked()) {
+            $this->renderLogin('Seu endereço IP está bloqueado por motivos de segurança.', $platform_settings ?? []);
+            return;
+        }
+
+        if (!Auth::checkBruteForce()) {
+            $lockout = $platform_settings['security_lockout_time'] ?? 15;
+            $this->renderLogin("Muitas tentativas. Seu IP está bloqueado temporariamente por $lockout minutos.", $platform_settings ?? []);
+            return;
+        }
+        // ──────────────────────────────────────────────────────
+
         if (!$username || !$password) {
             $error = 'Preencha todos os campos.';
         } else {
@@ -66,6 +79,7 @@ class LoginController extends Controller {
                 // ── END SINGLE SESSION CHECK ───────────────────────────
 
                 Auth::login($user);
+                Auth::resetAttempts(); // Reset failures on success
 
                 try {
                     require_once __DIR__ . '/../../includes/logs.php';
@@ -76,6 +90,7 @@ class LoginController extends Controller {
                 exit;
 
             } else {
+                Auth::registerFailedAttempt(); // Log failure for Brute Force check
                 $error = 'Credenciais inválidas.';
             }
         }

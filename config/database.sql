@@ -55,9 +55,6 @@ CREATE TABLE IF NOT EXISTS `cp_logs` (
   KEY `idx_action` (`action`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ----------------------------
--- Table structure for cp_notifications
--- ----------------------------
 CREATE TABLE IF NOT EXISTS `cp_notifications` (
     `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `user_id` INT(11) NOT NULL,
@@ -70,6 +67,26 @@ CREATE TABLE IF NOT EXISTS `cp_notifications` (
     PRIMARY KEY (`id`),
     KEY `user_id` (`user_id`),
     KEY `is_read` (`is_read`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cp_login_attempts
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_login_attempts` (
+  `ip_address` varchar(45) NOT NULL,
+  `attempts` int(11) NOT NULL DEFAULT '0',
+  `last_attempt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ip_address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cp_blocked_ips
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `cp_blocked_ips` (
+  `ip_address` varchar(45) NOT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ip_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------

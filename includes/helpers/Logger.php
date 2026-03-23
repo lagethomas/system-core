@@ -18,9 +18,16 @@ class Logger {
         
         try {
             $logRepo->create($data);
+
+            // AUTO-CLEANUP (Rule 39): Run once every ~100 log operations
+            if (mt_rand(1, 100) === 1) {
+                global $platform_settings;
+                $days = (int)($platform_settings['security_log_days'] ?? 30);
+                $limit = (int)($platform_settings['security_log_limit'] ?? 10000);
+                $logRepo->cleanup($days, $limit);
+            }
         } catch (Exception $e) {
-            // Failure to log shouldn't stop the system
-            error_log("Failed to log action '$action': " . $e->getMessage());
+            error_log("Failed to log action '$action' or cleanup: " . $e->getMessage());
         }
     }
 }

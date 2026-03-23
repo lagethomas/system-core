@@ -6,7 +6,7 @@
 - ESTRUTURA: MVC com PSR-4. Versione o sistema conforme correções e atualizações.
 - PERFORMANCE: Código compatível com Opcache Preloading. Use Redis para cache de sessões e queries custosas (TTL 3600s).
 - AJAX: Todas as ações do sistema devem ser via AJAX em tempo real, sem refresh de página.
-- Versionamento do sistema de acordo com as alterações, precisa sempre ter atualização nas versões
+- Versionamento do sistema de acordo com as alterações, precisa sempre ter atualização nas versões - Importante
 - DIRETÓRIOS: Seguir rigorosamente:
   ├── config/ | includes/ (helpers, PHPMailer, repositories) | logs/ | routes/
   ├── public/ (admin/, app/, assets/[css, img, js])
@@ -36,5 +36,6 @@
 
 ## 5. REGRAS DE NEGÓCIO ESPECÍFICAS
 - LOGS GLOBAIS: Toda ação CUD (Create, Update, Delete) deve ser registrada na tabela 'cp_logs'.
+- Notificações: Toda ação deve gerar uma notificação em 'cp_notifications'.
 - ABA SEGURANÇA: Deve conter gestão de: Retenção de histórico, proteção Brute Force, tempo de inatividade, sessão única e bloqueio de IP.
 - INTEGRAÇÕES: Novas integrações sempre em 'integracoes.php' como uma nova aba (tab).

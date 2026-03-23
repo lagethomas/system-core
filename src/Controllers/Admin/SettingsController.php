@@ -118,12 +118,29 @@ class SettingsController extends Controller {
                     $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                     $stmt->execute([$key, $val, $val]);
                 }
+                // Sync Blocked IPs table (Rule 39)
+                if (isset($_POST['security_blocked_ips'])) {
+                    try {
+                        $ips = explode("\n", str_replace("\r", "", $_POST['security_blocked_ips']));
+                        $ips = array_filter(array_map('trim', $ips));
+                        
+                        $pdo->exec("DELETE FROM cp_blocked_ips");
+                        if (!empty($ips)) {
+                            $stmt = $pdo->prepare("INSERT INTO cp_blocked_ips (ip_address, reason) VALUES (?, 'Bloqueio Manual')");
+                            foreach (array_unique($ips) as $ip) {
+                                if (!empty($ip)) $stmt->execute([$ip]);
+                            }
+                        }
+                    } catch (\PDOException $e) {
+                        // Migration may not have been run
+                    }
+                }
                 Cache::delete('platform_settings');
-                
+
                 $logRepo->create([
                     'user_id' => $_SESSION['user_id'] ?? 0,
                     'action' => 'Security Settings Updated',
-                    'description' => 'Políticas de segurança do sistema atualizadas.',
+                    'description' => 'Políticas de segurança e lista de IPs bloqueados atualizadas.',
                     'ip_address' => $_SERVER['REMOTE_ADDR'] ?? ''
                 ]);
 

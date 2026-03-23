@@ -64,8 +64,15 @@ class Auth {
      * Login user and initialize secure session markers
      */
     public static function login(array $user): void {
-        // Force session ID regeneration on login
+        // Regeneration on login (high security)
         session_regenerate_id(true);
+
+        $pdo = \DB::getInstance();
+        $sessionId = session_id();
+
+        // Update DB with current session ID for single-session enforcement
+        $stmt = $pdo->prepare('UPDATE cp_users SET current_session_id = ?, last_pulse = NOW() WHERE id = ?');
+        $stmt->execute([$sessionId, $user['id']]);
 
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
@@ -73,7 +80,7 @@ class Auth {
         $_SESSION['user_role'] = $user['role'];
         $_SESSION['last_activity'] = time();
 
-        // Security markers
+        // CSRF Marker and Security
         $_SESSION['secure_ua'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $_SESSION['secure_ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
     }
@@ -100,16 +107,97 @@ class Auth {
 
 
     /**
-     * Check for session inactivity (2 hours)
+     * Check for session inactivity (from system settings or 2 hours default)
      */
     public static function checkInactivity(): void {
         if (!isset($_SESSION['user_id'])) return;
 
-        $timeout = 7200; // 2 hours
+        global $platform_settings;
+        $timeout = (int)($platform_settings['security_session_timeout'] ?? 120) * 60; // Value in minutes
+
         if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
             self::logout();
         }
         $_SESSION['last_activity'] = time();
+    }
+
+    /**
+     * Single Session Check: Check if user already has an active session
+     */
+    public static function hasActiveSession(int $userId): bool {
+        $pdo = \DB::getInstance();
+        $stmt = $pdo->prepare('SELECT current_session_id, last_pulse FROM cp_users WHERE id = ?');
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch();
+
+        if ($user && !empty($user['current_session_id'])) {
+            // Check if pulse is within last 5 minutes (user hasn't closed tab)
+            $lastPulse = strtotime($user['last_pulse'] ?? '');
+            if ((time() - $lastPulse) < 300) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Clear session from DB
+     */
+    public static function clearSessionFromDB(int $userId): void {
+        $pdo = \DB::getInstance();
+        $stmt = $pdo->prepare('UPDATE cp_users SET current_session_id = NULL WHERE id = ?');
+        $stmt->execute([$userId]);
+    }
+
+    /**
+     * Check if IP is permanently blocked
+     */
+    public static function isIpBlocked(?string $ip = null): bool {
+        $ip = $ip ?? $_SERVER['REMOTE_ADDR'] ?? '';
+        $pdo = \DB::getInstance();
+        $stmt = $pdo->prepare('SELECT 1 FROM cp_blocked_ips WHERE ip_address = ?');
+        $stmt->execute([$ip]);
+        return (bool)$stmt->fetch();
+    }
+
+    /**
+     * Check Brute Force Protection
+     */
+    public static function checkBruteForce(?string $ip = null): bool {
+        global $platform_settings;
+        $max = (int)($platform_settings['security_max_attempts'] ?? 5);
+        $time = (int)($platform_settings['security_lockout_time'] ?? 15);
+
+        $ip = $ip ?? $_SERVER['REMOTE_ADDR'] ?? '';
+        $pdo = \DB::getInstance();
+        $stmt = $pdo->prepare('SELECT attempts, last_attempt FROM cp_login_attempts WHERE ip_address = ?');
+        $stmt->execute([$ip]);
+        $data = $stmt->fetch();
+
+        if ($data && $data['attempts'] >= $max) {
+            $lastAttempt = strtotime($data['last_attempt']);
+            if ((time() - $lastAttempt) < ($time * 60)) {
+                return false; // Blocked
+            } else {
+                self::resetAttempts($ip);
+            }
+        }
+        return true;
+    }
+
+    public static function registerFailedAttempt(?string $ip = null): void {
+        $ip = $ip ?? $_SERVER['REMOTE_ADDR'] ?? '';
+        $pdo = \DB::getInstance();
+        $stmt = $pdo->prepare('INSERT INTO cp_login_attempts (ip_address, attempts) VALUES (?, 1) 
+                               ON DUPLICATE KEY UPDATE attempts = attempts + 1, last_attempt = CURRENT_TIMESTAMP');
+        $stmt->execute([$ip]);
+    }
+
+    public static function resetAttempts(?string $ip = null): void {
+        $ip = $ip ?? $_SERVER['REMOTE_ADDR'] ?? '';
+        $pdo = \DB::getInstance();
+        $stmt = $pdo->prepare('DELETE FROM cp_login_attempts WHERE ip_address = ?');
+        $stmt->execute([$ip]);
     }
 }
 

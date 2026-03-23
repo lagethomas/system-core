@@ -249,6 +249,25 @@
                     </div>
                     <small class="text-muted d-block mt-auto pt-2">Volume total de registros permitidos.</small>
                 </div>
+
+                <!-- Blocked IPs Management (Rule 39) -->
+                <div class="upload-box-wrapper p-3" style="grid-column: span 2;">
+                    <label class="upload-label"><i class="fas fa-shield-alt"></i> Gestão de IPs Bloqueados</label>
+                    <div class="form-group mt-2">
+                        <textarea name="security_blocked_ips" class="form-control p-2" rows="3" placeholder="Insira um IP por linha..."><?php
+                            try {
+                                $pdo = \DB::getInstance();
+                                $blocked = $pdo->query("SELECT ip_address FROM cp_blocked_ips");
+                                if ($blocked) {
+                                    echo implode("\n", $blocked->fetchAll(PDO::FETCH_COLUMN));
+                                }
+                            } catch (\PDOException $e) {
+                                // Tabela pode não existir ainda se a migração não foi rodada
+                            }
+                        ?></textarea>
+                    </div>
+                    <small class="text-muted d-block mt-auto pt-2">IPs listados aqui terão acesso negado permanentemente.</small>
+                </div>
             </div>
 
             <div class="settings-footer-section">

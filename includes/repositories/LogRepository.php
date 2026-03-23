@@ -54,4 +54,20 @@ class LogRepository {
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Cleanup logs based on retention settings (Rule 39)
+     */
+    public function cleanup(int $days, int $limit): void {
+        // 1. Delete by age
+        $stmt = $this->pdo->prepare("DELETE FROM cp_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL ? DAY)");
+        $stmt->execute([$days]);
+
+        // 2. Delete by count if exceeds limit (keep newest)
+        $currentCount = $this->pdo->query("SELECT COUNT(*) FROM cp_logs")->fetchColumn();
+        if ($currentCount > $limit) {
+            $diff = $currentCount - $limit;
+            $this->pdo->exec("DELETE FROM cp_logs ORDER BY created_at ASC LIMIT " . (int)$diff);
+        }
+    }
 }

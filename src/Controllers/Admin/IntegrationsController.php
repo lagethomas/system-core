@@ -46,6 +46,7 @@ class IntegrationsController extends Controller {
             return;
         }
 
+        $sent = false;
         try {
             require_once __DIR__ . '/../../includes/mailer.php';
             $subject = "SaaSFlow Core - Teste de Configuração SMTP 🚀";
@@ -57,7 +58,7 @@ class IntegrationsController extends Controller {
                 </div>
             ";
 
-            $sent = Mailer::send($email, $subject, $body);
+            $sent = (bool)Mailer::send($email, $subject, $body);
 
             if ($sent) {
                 $this->jsonResponse(['success' => true, 'message' => 'E-mail de teste enviado com sucesso! Verifique sua caixa de entrada.']);
