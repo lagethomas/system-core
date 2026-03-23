@@ -57,7 +57,7 @@
                     <div class="upload-flex-container">
                         <div id="preview-logo" class="upload-preview-box">
                             <?php if (!empty($settings['system_logo'])): ?>
-                                <img src="<?php echo SITE_URL; ?>/assets/img/custom/<?php echo $settings['system_logo']; ?>" alt="Logo" class="logo-img">
+                                <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" alt="Logo" class="logo-img">
                             <?php else: ?>
                                 <i class="fas fa-layer-group"></i>
                             <?php endif; ?>
@@ -83,7 +83,7 @@
                     <div class="upload-flex-container">
                         <div id="preview-bg" class="upload-preview-box">
                             <?php if (!empty($settings['login_background'])): ?>
-                                <img src="<?php echo SITE_URL; ?>/assets/img/custom/<?php echo $settings['login_background']; ?>" alt="BG" class="bg-img">
+                                <img src="<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>" alt="BG" class="bg-img">
                             <?php else: ?>
                                 <i class="fas fa-image"></i>
                             <?php endif; ?>

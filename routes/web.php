@@ -9,6 +9,7 @@ $admin = \App\Middleware\AdminMiddleware::class;
 $router->add('GET',  '/login',  ['controller' => 'LoginController', 'method' => 'index']);
 $router->add('POST', '/login',  ['controller' => 'LoginController', 'method' => 'attempt']);
 $router->add('GET',  '/logout', ['controller' => 'LoginController', 'method' => 'logout']);
+$router->add('GET',  '/confirm-email', ['controller' => 'Auth\\EmailConfirmationController', 'method' => 'confirm']);
 
 // ── Authenticated Routes ─────────────────────────────────────────
 $router->add('GET', '/',          ['controller' => 'DashboardController', 'method' => 'index', 'middlewares' => [$auth]]);

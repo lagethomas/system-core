@@ -80,7 +80,7 @@
         }
     </style>
 </head>
-<body class="auth-wrapper" <?php if (!empty($settings['login_background'])): ?> style="background: url('<?php echo SITE_URL; ?>/assets/img/custom/<?php echo $settings['login_background']; ?>') no-repeat center center fixed; background-size: cover;" <?php endif; ?>>
+<body class="auth-wrapper" <?php if (!empty($settings['login_background'])): ?> style="background: url('<?php echo SITE_URL; ?>/uploads/backgrounds/<?php echo $settings['login_background']; ?>') no-repeat center center fixed; background-size: cover;" <?php endif; ?>>
     
     <?php if (!empty($settings['login_background'])): ?>
         <div class="auth-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 0;"></div>
@@ -90,7 +90,7 @@
         <div class="auth-header">
             <div class="auth-logo-box">
                 <?php if (!empty($settings['system_logo'])): ?>
-                    <img src="<?php echo SITE_URL; ?>/assets/img/custom/<?php echo $settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                 <?php else: ?>
                     <i class="fas fa-layer-group"></i>
                 <?php endif; ?>

@@ -39,3 +39,4 @@
 - Notificações: Toda ação deve gerar uma notificação em 'cp_notifications'.
 - ABA SEGURANÇA: Deve conter gestão de: Retenção de histórico, proteção Brute Force, tempo de inatividade, sessão única e bloqueio de IP.
 - INTEGRAÇÕES: Novas integrações sempre em 'integracoes.php' como uma nova aba (tab).
+- Os uploads devem ser feitos na pasta upload em /public/uploads

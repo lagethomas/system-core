@@ -45,32 +45,33 @@ class SettingsController extends Controller {
                 }
 
                 require_once __DIR__ . '/../../../includes/helpers/ImageHelper.php';
-                $uploadDir = __DIR__ . '/../../../public/assets/img/custom';
+                $logoDir = __DIR__ . '/../../../public/uploads/logos';
+                $bgDir   = __DIR__ . '/../../../public/uploads/backgrounds';
 
                 // Handle Logo Upload
                 if (!empty($_FILES['system_logo']['name'])) {
-                    $newLogo = \ImageHelper::uploadAndConvert($_FILES['system_logo'], $uploadDir, 'logo');
+                    $newLogo = \ImageHelper::uploadAndConvert($_FILES['system_logo'], $logoDir, 'logo');
                     if ($newLogo) {
-                        if (!empty($existing['system_logo'])) \ImageHelper::safeDelete($existing['system_logo'], $uploadDir);
+                        if (!empty($existing['system_logo'])) \ImageHelper::safeDelete($existing['system_logo'], $logoDir);
                         $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('system_logo', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                         $stmt->execute([$newLogo, $newLogo]);
                     }
                 } elseif (isset($_POST['remove_logo'])) {
-                    if (!empty($existing['system_logo'])) \ImageHelper::safeDelete($existing['system_logo'], $uploadDir);
+                    if (!empty($existing['system_logo'])) \ImageHelper::safeDelete($existing['system_logo'], $logoDir);
                     $stmt = $pdo->prepare("UPDATE cp_settings SET setting_value = NULL WHERE setting_key = 'system_logo'");
                     $stmt->execute();
                 }
 
                 // Handle Login Background Upload
                 if (!empty($_FILES['login_background']['name'])) {
-                    $newBg = \ImageHelper::uploadAndConvert($_FILES['login_background'], $uploadDir, 'login_bg');
+                    $newBg = \ImageHelper::uploadAndConvert($_FILES['login_background'], $bgDir, 'login_bg');
                     if ($newBg) {
-                        if (!empty($existing['login_background'])) \ImageHelper::safeDelete($existing['login_background'], $uploadDir);
+                        if (!empty($existing['login_background'])) \ImageHelper::safeDelete($existing['login_background'], $bgDir);
                         $stmt = $pdo->prepare("INSERT INTO cp_settings (setting_key, setting_value) VALUES ('login_background', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
                         $stmt->execute([$newBg, $newBg]);
                     }
                 } elseif (isset($_POST['remove_login_bg'])) {
-                    if (!empty($existing['login_background'])) \ImageHelper::safeDelete($existing['login_background'], $uploadDir);
+                    if (!empty($existing['login_background'])) \ImageHelper::safeDelete($existing['login_background'], $bgDir);
                     $stmt = $pdo->prepare("UPDATE cp_settings SET setting_value = NULL WHERE setting_key = 'login_background'");
                     $stmt->execute();
                 }

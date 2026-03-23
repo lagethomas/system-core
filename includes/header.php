@@ -89,7 +89,7 @@ $unread_count = count($unread_notifications);
                 <a href="<?php echo SITE_URL; ?>/dashboard" class="logo">
                     <div class="sidebar-logo-icon" <?php echo !empty($platform_settings['system_logo']) ? 'style="background: transparent;"' : ''; ?>>
                         <?php if (!empty($platform_settings['system_logo'])): ?>
-                            <img src="<?php echo SITE_URL; ?>/assets/img/custom/<?php echo $platform_settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            <img src="<?php echo SITE_URL; ?>/uploads/logos/<?php echo $platform_settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                         <?php else: ?>
                             <i class="fas fa-layer-group"></i>
                         <?php endif; ?>
@@ -213,7 +213,7 @@ $unread_count = count($unread_notifications);
 document.getElementById('user-profile-trigger').addEventListener('click', function(e) {
     e.stopPropagation();
     const dropdown = document.getElementById('user-dropdown');
-    dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+    dropdown.classList.toggle('active');
     this.classList.toggle('active');
 });
 
@@ -225,7 +225,11 @@ document.getElementById('notif-trigger').addEventListener('click', function(e) {
 
 // Fechar dropdowns ao clicar fora
 document.addEventListener('click', function() {
-    document.getElementById('user-dropdown').style.display = 'none';
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.getElementById('user-profile-trigger');
+    if (dropdown) dropdown.classList.remove('active');
+    if (trigger) trigger.classList.remove('active');
+
     const notif = document.getElementById('notif-dropdown');
     if (notif) notif.classList.remove('active');
 });
