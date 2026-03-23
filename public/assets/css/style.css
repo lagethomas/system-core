@@ -757,15 +757,6 @@ body {
 
 .password-toggle-btn:hover {
     color: var(--primary);
-    transform: scale(1.1);
-}
-
-.password-toggle-btn i {
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.password-toggle-btn:active i {
-    transform: scale(0.8);
 }
 
 /* Visibility for date/time picker icons in dark mode */
@@ -821,6 +812,12 @@ body {
 .form-grid-3 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
 }
 

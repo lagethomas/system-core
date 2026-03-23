@@ -24,3 +24,10 @@ INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES
 -- Title: Add heartbeat for single session enforcement
 -- Description: Adds last_pulse columns to track activity for blocking.
 ALTER TABLE `cp_users` ADD COLUMN IF NOT EXISTS `last_pulse` DATETIME DEFAULT NULL COMMENT 'Last user activity heartbeat';
+
+-- [MIGRATION #004]
+-- Title: Add Visual Theme settings
+-- Description: Adds system_logo and login_background to cp_settings.
+INSERT IGNORE INTO `cp_settings` (`setting_key`, `setting_value`) VALUES 
+('system_logo', NULL),
+('login_background', NULL);

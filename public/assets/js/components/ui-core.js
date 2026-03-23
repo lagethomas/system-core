@@ -218,14 +218,11 @@ const UI = {
         const isPassword = input.type === 'password';
         input.type = isPassword ? 'text' : 'password';
         
+        const isNowPassword = (input.type === 'password');
         const icon = btn.querySelector('i');
         if (icon) {
-            icon.classList.toggle('fa-eye', !isPassword);
-            icon.classList.toggle('fa-eye-slash', isPassword);
-            
-            // Animation
-            icon.style.transform = 'scale(1.2)';
-            setTimeout(() => icon.style.transform = 'scale(1)', 200);
+            icon.classList.toggle('fa-lock-open', !isNowPassword);
+            icon.classList.toggle('fa-lock', isNowPassword);
         }
     },
 
@@ -248,7 +245,7 @@ const UI = {
             btn.type = 'button';
             btn.className = 'password-toggle-btn';
             btn.title = 'Mostrar/Ocultar Senha';
-            btn.innerHTML = '<i class="fas fa-eye"></i>';
+            btn.innerHTML = '<i class="fas fa-lock"></i>';
             
             if (!input.id) input.id = 'pwd-' + Math.random().toString(36).substr(2, 9);
             
@@ -260,10 +257,13 @@ const UI = {
             
             wrapper.appendChild(btn);
             
-            // If there's an existing generate-password button, we may need to adjust spacing
-            const genBtn = wrapper.querySelector('.btn-generate-password');
+            // If there's an existing generate-password button, move it inside the wrapper
+            const parent = wrapper.parentElement;
+            const genBtn = parent ? parent.querySelector('.btn-generate-password') : null;
             if (genBtn) {
-                btn.style.right = '45px'; 
+                wrapper.appendChild(genBtn);
+                btn.style.right = '40px'; 
+                genBtn.style.right = '10px';
             }
         });
     }

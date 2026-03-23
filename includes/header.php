@@ -79,6 +79,7 @@ $unread_count = count($unread_notifications);
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
 </head>
 <body>
     <div class="app-container">
@@ -86,8 +87,12 @@ $unread_count = count($unread_notifications);
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="<?php echo SITE_URL; ?>/dashboard" class="logo">
-                    <div class="sidebar-logo-icon">
-                        <i class="fas fa-layer-group"></i>
+                    <div class="sidebar-logo-icon" <?php echo !empty($platform_settings['system_logo']) ? 'style="background: transparent;"' : ''; ?>>
+                        <?php if (!empty($platform_settings['system_logo'])): ?>
+                            <img src="<?php echo SITE_URL; ?>/assets/img/custom/<?php echo $platform_settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        <?php else: ?>
+                            <i class="fas fa-layer-group"></i>
+                        <?php endif; ?>
                     </div>
                     <span><?php echo htmlspecialchars($system_name); ?></span>
                 </a>

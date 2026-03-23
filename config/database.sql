@@ -81,7 +81,7 @@ INSERT INTO `cp_users` (`name`, `username`, `email`, `password`, `role`) VALUES
 
 INSERT INTO `cp_settings` (`setting_key`, `setting_value`) VALUES 
 ('system_theme', 'gold-black'),
-('system_name', 'SaaSFlow Core'),
+('system_name', 'Core'),
 ('smtp_host', 'localhost'),
 ('smtp_port', '587'),
 ('smtp_secure', 'tls'),
@@ -93,6 +93,8 @@ INSERT INTO `cp_settings` (`setting_key`, `setting_value`) VALUES
 ('security_session_timeout', '120'),
 ('security_ip_lockout', '0'),
 ('security_log_days', '30'),
-('security_log_limit', '10000');
+('security_log_limit', '10000'),
+('system_logo', NULL),
+('login_background', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;

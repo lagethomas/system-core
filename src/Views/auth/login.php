@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/theme/<?php echo $theme_slug; ?>.css?v=<?php echo $v; ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/img/icon-192.png">
 
     <style>
         .alert-session {
@@ -79,11 +80,20 @@
         }
     </style>
 </head>
-<body class="auth-wrapper">
-    <div class="auth-card">
+<body class="auth-wrapper" <?php if (!empty($settings['login_background'])): ?> style="background: url('<?php echo SITE_URL; ?>/assets/img/custom/<?php echo $settings['login_background']; ?>') no-repeat center center fixed; background-size: cover;" <?php endif; ?>>
+    
+    <?php if (!empty($settings['login_background'])): ?>
+        <div class="auth-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 0;"></div>
+    <?php endif; ?>
+
+    <div class="auth-card" style="position: relative; z-index: 1; <?php echo !empty($settings['login_background']) ? 'backdrop-filter: blur(12px); background: rgba(15, 17, 21, 0.85); border: 1px solid rgba(255,255,255,0.1); shadow: 0 25px 50px rgba(0,0,0,0.5);' : ''; ?>">
         <div class="auth-header">
             <div class="auth-logo-box">
-                <i class="fas fa-layer-group"></i>
+                <?php if (!empty($settings['system_logo'])): ?>
+                    <img src="<?php echo SITE_URL; ?>/assets/img/custom/<?php echo $settings['system_logo']; ?>" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                <?php else: ?>
+                    <i class="fas fa-layer-group"></i>
+                <?php endif; ?>
             </div>
             <h2 class="auth-title"><?php echo $system_name; ?></h2>
             <p class="auth-subtitle">Acesse sua conta para continuar</p>
